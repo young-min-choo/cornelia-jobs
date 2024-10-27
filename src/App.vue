@@ -5,20 +5,20 @@
     <div>
       <button @click="changeAge(35)">Change Age</button>
     </div> -->
-    <p v-for="job in jobs" :key="job.id">
-      {{ job.location }}
-    </p>
+    <JobList :jobs="jobs" />
     <!-- <p>{{ jobs[0].location }}</p> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs } from 'vue';
+import JobList from './components/JobList.vue'
 import Job from './types/Job';
 import {v4 as uuidv4} from 'uuid';
 export default defineComponent({
   name: 'App',
   components: {
+    JobList
   },
   setup() {
     // // Reactive
