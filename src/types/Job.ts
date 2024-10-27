@@ -1,8 +1,9 @@
 interface Job {
+    readonly id: string
     title: string,
     location: string,
     salary: number,
-    readonly id: string
+    postTime: Date
 }
 
 export default Job

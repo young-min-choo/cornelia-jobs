@@ -1,12 +1,17 @@
 <template>
   <div class="app">
-    <!-- <p>hello, {{ name }}. You are currently {{ age }}</p>
-    <button @click="changeName('Fritz')">Change Name</button>
-    <div>
-      <button @click="changeAge(35)">Change Age</button>
-    </div> -->
-    <JobList :jobs="jobs" />
-    <!-- <p>{{ jobs[0].location }}</p> -->
+    <header>
+      <div class="title">
+        <h1>Cornelia Jobs</h1>
+      </div>
+      <div class="order">
+        <button @click="handleClick('title')">Sort by Title</button>
+        <button @click="handleClick('location')">Sort by Location</button>
+        <button @click="handleClick('salary')">Sort by Salary</button>
+        <button @click="handleClick('postTime')">Sort by Posted Time</button>
+      </div>
+    </header>
+    <JobList :jobs="jobs" :order="order" />
   </div>
 </template>
 
@@ -14,54 +19,50 @@
 import { defineComponent, reactive, ref, toRefs } from 'vue';
 import JobList from './components/JobList.vue'
 import Job from './types/Job';
+import OrderTerm from './types/OrderTerm';
 import {v4 as uuidv4} from 'uuid';
 export default defineComponent({
   name: 'App',
   components: {
     JobList
   },
-  setup() {
-    // // Reactive
-    // const state = reactive({
-    //   name: "Puffy",
-    //   age: 25 as number | string,
-    // })
-
-    // return { ...toRefs(state) }
-
-    // // refs
-    // const name = ref('Puffy')
-    // const age = ref<number | string>(25)
-
-    // return {name, age}
+  setup() {    
     const jobs = ref<Job[]>([
       {
         title: 'Help The Priest',
         location: 'Cathedral',
         salary: 500,
-        id: uuidv4()
+        id: uuidv4(),
+        postTime: new Date(2024,10,15)
       },
       {
         title: 'Defeat Goblins',
         location: 'Outside Cornelia Castle',
         salary: 1500,
-        id: uuidv4()
+        id: uuidv4(),
+        postTime: new Date(2024,10,6)
       },
       {
         title: 'Talk To The King',
         location: 'Cornelia Castle 3F',
         salary: 200,
-        id: uuidv4()
+        id: uuidv4(),
+        postTime: new Date(2024,10,7)
       },
       {
         title: 'Accept Your Fate',
         location: 'Cornelia Castle 3F',
         salary: 5000,
-        id: uuidv4()
+        id: uuidv4(),
+        postTime: new Date(2024,10,8)
       },
     ])
+    const order = ref<OrderTerm>('title')
+    const handleClick = (term: OrderTerm) => {
+      order.value = term
+    }
 
-    return {jobs}
+    return {jobs, handleClick, order}
   },
   methods: {
     // changeName(name: string) {
@@ -76,4 +77,20 @@ export default defineComponent({
 </script>
 
 <style>
+  header {
+    text-align: center;
+  }
+  header .order {
+    margin-top: 20px;
+  }
+  button {
+    margin: 0 10px;
+    color: #1195c9;
+    border: 3px solid #1195c9;
+    background: #d5f0ff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
 </style>
