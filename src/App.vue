@@ -21,7 +21,6 @@ import JobList from './components/JobList.vue'
 import Job from './types/Job';
 import OrderTerm from './types/OrderTerm';
 import {v4 as uuidv4} from 'uuid';
-import ResponseData from './types/responseData';
 export default defineComponent({
   name: 'App',
   components: {
