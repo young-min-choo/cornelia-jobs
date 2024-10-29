@@ -2,7 +2,7 @@
   <div class="app">
     <header>
       <div class="title">
-        <h1>Cornelia Jobs</h1>
+        <h1><img src="./assets/ff1_warrior.png" alt="title-image" class="title-image">Cornelia Jobs</h1>
       </div>
       <div class="order">
         <button @click="handleClick('title')">Sort by Title</button>
@@ -17,15 +17,18 @@
     <div v-if="createFlag" class="job-input">
       <div class="input-items-wrapper">
         <label for="create-title"> Title </label>
-        <input type="text" id="create-title" :value="newJob.title">
+        <input type="text" id="create-title" v-model="newJobInput.title">
 
         <label for="create-title"> Location </label>
-        <input type="text" id="create-location" :value="newJob.location">
+        <input type="text" id="create-location" v-model="newJobInput.location">
   
         <label for="create-title"> Salary </label>
-        <input type="number" id="create-salary" :value="newJob.salary">
+        <input type="number" id="create-salary" v-model="newJobInput.salary">
+
+        <label for="create-description"> Description </label>
+        <textarea id="create-description" v-model="newJobInput.description"></textarea>
       </div>
-      <button @click="createJob(newJob)">Submit</button>
+      <button @click="createJob(newJobInput)">Submit</button>
     </div>
     <JobList :jobs="jobs" :order="order" />
   </div>
@@ -37,6 +40,7 @@ import JobList from './components/JobList.vue'
 import Job from './types/Job';
 import OrderTerm from './types/OrderTerm';
 import {v4 as uuidv4} from 'uuid';
+import PlaceholderJob from './types/placeholderJob';
 export default defineComponent({
   name: 'App',
   components: {
@@ -45,43 +49,15 @@ export default defineComponent({
   setup() {    
     let createFlag = ref(false);
     const baseURL = 'http://localhost:3000'
-    const newJob: Job = {
-      id: uuidv4(),
+    let newJobInput =  ref<PlaceholderJob>({
+      id: '',
       title: '',
       location: '',
+      description: '',
       salary: 0,
       postTime: new Date()
-    }
-    const jobs = ref<Job[]>([
-      {
-        title: 'Help The Priest',
-        location: 'Cathedral',
-        salary: 500,
-        id: uuidv4(),
-        postTime: new Date(2024,10,15)
-      },
-      {
-        title: 'Defeat Goblins',
-        location: 'Outside Cornelia Castle',
-        salary: 1500,
-        id: uuidv4(),
-        postTime: new Date(2024,10,6)
-      },
-      {
-        title: 'Talk To The King',
-        location: 'Cornelia Castle 3F',
-        salary: 200,
-        id: uuidv4(),
-        postTime: new Date(2024,10,7)
-      },
-      {
-        title: 'Accept Your Fate',
-        location: 'Cornelia Castle 3F',
-        salary: 5000,
-        id: uuidv4(),
-        postTime: new Date(2024,10,8)
-      },
-    ])
+    })
+    const jobs = ref<Job[]>([])
     async function fetchJobs(): Promise<Job[]> {
       try {
         const response = await fetch(baseURL + '/api/jobs', {
@@ -104,9 +80,12 @@ export default defineComponent({
         throw error;  // Rethrow the error so it can be handled by the caller
       }
     }
-    async function createJob(job: Job) {
+    async function createJob(newJob: PlaceholderJob) {
       try {
-        // job.id = uuidv4()
+
+        newJob.id = uuidv4()
+        newJob.postTime = new Date()
+        const job:Job = newJob as Job
         console.log("Job: ", job)
         const response = await fetch(baseURL + '/api/jobs/create', {
           method: 'POST',
@@ -120,8 +99,13 @@ export default defineComponent({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data)
+        // console.log(data)
         jobs.value.push(data)
+        newJob.title = ''
+        newJob.location = ''
+        newJob.salary = 0
+        newJob.description = ''
+        createFlag.value = false
       } catch (error) {
         console.error("Error creating job:", error);
         throw error
@@ -129,14 +113,14 @@ export default defineComponent({
     }
     fetchJobs()
       .then(jobsRetrieved => {
-        console.log("Jobs: ", jobsRetrieved);
+        // console.log("Jobs: ", jobsRetrieved);
         // jobsRetrieved.forEach((job:Job) => {
         // })
         jobsRetrieved.forEach((singleJob) => {
-          console.log("SingleJob: ", singleJob)
+          // console.log("SingleJob: ", singleJob)
           jobs.value.push(singleJob)
         })
-        console.log("Final Job Listing: ", jobs.value)
+        // console.log("Final Job Listing: ", jobs.value)
       })
       .catch(error => {
         console.error("Fetch failed: ", error)
@@ -150,7 +134,7 @@ export default defineComponent({
     //   createFlag = !createFlag;
     //   console.log(createFlag.valueOf())
     // }
-    return {jobs, handleClick, order, baseURL, createJob, newJob, createFlag}
+    return {jobs, handleClick, order, baseURL, createJob, newJobInput, createFlag}
   },
   methods: {
     // changeName(name: string) {
@@ -186,5 +170,10 @@ export default defineComponent({
   }
   .input-items-wrapper {
     display: grid;
+  }
+  .title-image {
+    height: 25px;
+    width: 20px;
+    margin-right: 5px;
   }
 </style>

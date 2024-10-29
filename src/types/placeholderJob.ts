@@ -1,5 +1,5 @@
-interface Job {
-    readonly id: string
+interface PlaceholderJob {
+    id: string,
     title: string,
     location: string,
     description: string,
@@ -7,4 +7,4 @@ interface Job {
     postTime: Date
 }
 
-export default Job
+export default PlaceholderJob

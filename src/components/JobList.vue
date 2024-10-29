@@ -8,14 +8,7 @@
                     <p>{{ job.salary }} Gil</p>
                 </div>
                 <div class="description">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut 
-                        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                        
-                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
-                        deserunt mollit anim id est laborum.</p>
+                    <p>{{ job.description }}</p>
                 </div>
             </li>
         </transition-group>
@@ -31,10 +24,11 @@ export default defineComponent({
     setup(props) {
         const orderedJobs = computed(() => {
             return [...props.jobs].sort((a: Job,b: Job) => {
-                if (props.order === 'postTime')
-                    return a[props.order].getUTCDate() < b[props.order].getUTCDate() ? 1: -1
+                if (props.order === 'postTime'){
+                  return new Date(a[props.order]).getUTCDate() < new Date(b[props.order]).getUTCDate() ? 1: -1
+                }
                 else  
-                    return a[props.order] > b[props.order] ? 1: -1
+                  return a[props.order] > b[props.order] ? 1: -1
             })
         })
 
